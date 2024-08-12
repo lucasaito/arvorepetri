@@ -1,0 +1,201 @@
+package org.example;
+public class arvoreBinaria {
+    private No raiz;
+
+    public arvoreBinaria() {
+        this.raiz = null;
+    }
+
+    public void inserir(int valor) {
+        No novoNo = new No(valor);
+        if (this.raiz == null) {
+            this.raiz = novoNo;
+        } else {
+            No atual = this.raiz;
+            No pai = null;
+            boolean esquerda = false;
+            while (atual != null) {
+                if (novoNo.getValor() < atual.getValor()) {
+                    pai = atual;
+                    atual = atual.getEsq();
+                    esquerda = true;
+                } else {
+                    pai = atual;
+                    atual = atual.getDir();
+                    esquerda = false;
+                }
+            }
+            if (esquerda) {
+                pai.setEsq(novoNo);
+            } else {
+                pai.setDir(novoNo);
+            }
+        }
+    }
+
+    public No getRaiz() {
+        return this.raiz;
+    }
+
+    public boolean verifica(No no, int valor) {
+        if (no == null) {
+            return false;
+        }
+        if (no.getValor() == valor) {
+            return true;
+        } else if (no.getValor() > valor) {
+            return verifica(no.getEsq(), valor);
+        } else {
+            return verifica(no.getDir(), valor);
+        }
+    }
+
+    public No retornaNo(No no, int valor) {
+        if (verifica(no, valor)) {
+            if (no.getValor() == valor) {
+                return no;
+            } else if (no.getValor() > valor) {
+                return retornaNo(no.getEsq(), valor);
+            } else {
+                return retornaNo(no.getDir(), valor);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public boolean folhaNo(No no) {
+        if (no.getEsq() == null && no.getDir() == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public No retornaPai(No no, int valor) {
+        if (no.getDir() !=null && no.getDir().getValor() == valor) {
+            return no;
+        } else if (no.getEsq() !=null && no.getEsq().getValor() == valor) {
+            return no;
+        } else if (no.getValor() > valor) {
+            return retornaPai(no.getEsq(), valor);
+        } else {
+            return retornaPai(no.getDir(), valor);
+        }
+    }
+
+    public boolean posicaoDir(No no) {
+        if (retornaPai(raiz, no.getValor()).getDir() == no) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public No menorDireita(No no) {
+        if (no.getEsq() == null) {
+            return no;
+        } else {
+            return menorDireita(no.getEsq());
+        }
+    }
+
+    public void preOrdem(No no) {
+        if(no == null) {
+            return;
+        }
+        System.out.println(no.getValor());
+        preOrdem(no.getEsq());
+        preOrdem(no.getDir());
+    }
+    public void remocao(No no, int valor) {
+        if (verifica(no, valor)) {
+            if (no.getValor() == valor) {
+                if (no.getValor() == raiz.getValor()){
+                    No noAux = menorDireita(no.getDir()).getDir();
+                    No novaRaiz = menorDireita(no.getDir());
+                    menorDireita(no.getDir()).setDir(no.getDir());
+                    menorDireita(no.getDir()).setEsq(no.getEsq());
+                    if(no.getDir().getEsq() != null) {
+                        if (no.getDir().getEsq().getDir() != null){
+                            no.getDir().setEsq(noAux);
+                        } else {
+                            no.getDir().setEsq(null);
+                        }
+                    }
+                    System.out.println("caso raiz");
+                    raiz = novaRaiz;
+                }else if (folhaNo(retornaNo(raiz, valor))) {
+                    if (retornaPai(raiz, valor).getDir() != null && retornaPai(raiz, valor).getDir().getValor() == valor) {
+                        System.out.println("o nó folha que estava a direita de valor : " + no.getValor() + " foi removido e seu pai cujo valor : " + retornaPai(raiz, valor).getValor() + " teve seu apontamento a direita removido");
+                        retornaPai(raiz, valor).setDir(null);
+                    } else {
+                        System.out.println("o nó folha que estava a esquerda de valor : " + no.getValor() + " foi removido e seu pai cujo valor : " + retornaPai(raiz, valor).getValor() + " teve seu apontamento a esquerda removido");
+                        retornaPai(raiz, valor).setEsq(null);
+                    }
+                } else if (no.getDir() == null) {
+                    if (posicaoDir(no)) {
+                        retornaPai(raiz, valor).setDir(no.getEsq());
+                        System.out.println("no pai com filho a esquerda removido");
+                    } else {
+                        retornaPai(raiz, valor).setEsq(no.getEsq());
+                        System.out.println("no pai com filho a esquerda removido");
+                    }
+                } else if (no.getEsq() == null) {
+                    if (posicaoDir(no)) {
+                        retornaPai(raiz, valor).setDir(no.getDir());
+                        System.out.println("no pai com filho a direita removido");
+                    } else {
+                        retornaPai(raiz, valor).setEsq(no.getDir());
+                        System.out.println("no pai com filho a direita removido");
+                    }
+                } else if (no.getEsq() != null && no.getDir() != null) {
+                    if (posicaoDir(no)) {
+                        No noAux = menorDireita(no.getDir()).getDir();
+                        retornaPai(raiz, valor).setDir(menorDireita(no.getDir()));
+                        if(no.getDir().getEsq() != null) {
+                            menorDireita(no.getDir()).setDir(no.getDir());
+                            menorDireita(no.getDir()).setEsq(no.getEsq());
+                            if (no.getDir().getEsq().getDir() != null){
+                                no.getDir().setEsq(noAux);
+                            } else {
+                                no.getDir().setEsq(null);
+                            }
+                        }else if (menorDireita(no.getDir()).getDir() == null && menorDireita(no.getEsq()) == null){
+                            menorDireita(no.getDir()).setEsq(no.getEsq());
+                            menorDireita(no.getDir()).setDir(null);
+                        }
+                        System.out.println("caso1");
+                    } else {
+                        No noAux = menorDireita(no.getDir()).getDir();
+                        retornaPai(raiz, valor).setEsq(menorDireita(no.getDir()));
+                        menorDireita(no.getDir()).setDir(no.getDir());
+                        menorDireita(no.getDir()).setEsq(no.getEsq());
+                        if (menorDireita(no.getDir()).getValor() == no.getDir().getValor()){
+                            menorDireita(no.getDir()).setDir(null);
+                        }
+                        if(no.getDir().getEsq() != null) {
+                            if (no.getDir().getEsq().getDir() != null){
+                                no.getDir().setEsq(noAux);
+                            } else {
+                                no.getDir().setEsq(null);
+                            }
+                        }
+                        System.out.println("caso2");
+                    }
+                }
+            } else if (no.getValor() > valor) {
+                remocao(no.getEsq(), valor);
+            } else {
+                remocao(no.getDir(), valor);
+            }
+        } else {
+            System.out.println("O valor inserido não existe");
+        }
+    }
+
+}
+
+
+
+
