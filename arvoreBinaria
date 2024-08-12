@@ -94,9 +94,6 @@ public class arvoreBinaria {
 
     public No menorDireita(No no) {
         if (no.getEsq() == null) {
-            if (no.getDir() != null) {
-                retornaPai(no, no.getValor()).setEsq(no.getDir());
-            }
             return no;
         } else {
             return menorDireita(no.getEsq());
@@ -140,12 +137,13 @@ public class arvoreBinaria {
                     }
                 } else if (no.getEsq() != null && no.getDir() != null) {
                     if (posicaoDir(no)) {
+                        No noAux = menorDireita(no.getDir()).getDir();
                         retornaPai(raiz, valor).setDir(menorDireita(no.getDir()));
                         menorDireita(no.getDir()).setDir(no.getDir());
                         menorDireita(no.getDir()).setEsq(no.getEsq());
                         if(no.getDir().getEsq() != null) {
                             if (no.getDir().getEsq().getDir() != null){
-                                no.getDir().setEsq(no.getDir().getEsq().getDir());
+                                no.getDir().setEsq(noAux);
                             } else {
                                 no.getDir().setEsq(null);
                             }
@@ -153,12 +151,13 @@ public class arvoreBinaria {
                         System.out.println(raiz.getDir().getValor());
                         System.out.println("caso1");
                     } else {
+                        No noAux = menorDireita(no.getDir()).getDir();
                         retornaPai(raiz, valor).setEsq(menorDireita(no.getDir()));
                         menorDireita(no.getDir()).setDir(no.getDir());
                         menorDireita(no.getDir()).setEsq(no.getEsq());
                         if(no.getDir().getEsq() != null) {
                             if (no.getDir().getEsq().getDir() != null){
-                                no.getDir().setEsq(no.getDir().getEsq().getDir());
+                                no.getDir().setEsq(noAux);
                             } else {
                                 no.getDir().setEsq(null);
                             }
