@@ -92,13 +92,17 @@ public class arvoreBinaria {
         }
     }
 
-    public No menorDireita (No no) {
-        if(no.getEsq() == null) {
+    public No menorDireita(No no) {
+        if (no.getEsq() == null) {
+            if (no.getDir() != null) {
+                retornaPai(no, no.getValor()).setEsq(no.getDir());
+            }
             return no;
         } else {
             return menorDireita(no.getEsq());
         }
     }
+
     public void preOrdem(No no) {
         if(no == null) {
             return;
@@ -127,7 +131,7 @@ public class arvoreBinaria {
                         System.out.println("no pai com filho a esquerda removido");
                     }
                 } else if (no.getEsq() == null) {
-                    if (posicaoDir(no) == false) {
+                    if (posicaoDir(no)) {
                         retornaPai(raiz, valor).setDir(no.getDir());
                         System.out.println("no pai com filho a direita removido");
                     } else {
@@ -137,21 +141,30 @@ public class arvoreBinaria {
                 } else if (no.getEsq() != null && no.getDir() != null) {
                     if (posicaoDir(no)) {
                         retornaPai(raiz, valor).setDir(menorDireita(no.getDir()));
-                        retornaPai(raiz, menorDireita(no.getDir()).getValor()).setEsq(null);
                         menorDireita(no.getDir()).setDir(no.getDir());
                         menorDireita(no.getDir()).setEsq(no.getEsq());
+                        if(no.getDir().getEsq() != null) {
+                            if (no.getDir().getEsq().getDir() != null){
+                                no.getDir().setEsq(no.getDir().getEsq().getDir());
+                            } else {
+                                no.getDir().setEsq(null);
+                            }
+                        }
                         System.out.println(raiz.getDir().getValor());
-                        System.out.println("asdasd");
+                        System.out.println("caso1");
                     } else {
                         retornaPai(raiz, valor).setEsq(menorDireita(no.getDir()));
-                        if(retornaPai(raiz, menorDireita(no.getDir()).getValor()).getDir() != null) {
-                            retornaPai(raiz, menorDireita(no.getDir()).getValor()).setEsq(menorDireita(no.getDir()).getDir());
-                        } else {
-                            retornaPai(raiz, menorDireita(no.getDir()).getValor()).setEsq(null);
-                        }
                         menorDireita(no.getDir()).setDir(no.getDir());
                         menorDireita(no.getDir()).setEsq(no.getEsq());
+                        if(no.getDir().getEsq() != null) {
+                            if (no.getDir().getEsq().getDir() != null){
+                                no.getDir().setEsq(no.getDir().getEsq().getDir());
+                            } else {
+                                no.getDir().setEsq(null);
+                            }
+                        }
                         System.out.println(raiz.getDir().getValor());
+                        System.out.println("caso2");
                     }
                 }
             } else if (no.getValor() > valor) {
