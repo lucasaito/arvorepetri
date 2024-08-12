@@ -111,7 +111,22 @@ public class arvoreBinaria {
     public void remocao(No no, int valor) {
         if (verifica(no, valor)) {
             if (no.getValor() == valor) {
-                if (folhaNo(retornaNo(raiz, valor))) {
+                if (no.getValor() == raiz.getValor()){
+                    No noAux = menorDireita(no.getDir()).getDir();
+                    No novaRaiz = menorDireita(no.getDir());
+                    menorDireita(no.getDir()).setDir(no.getDir());
+                    menorDireita(no.getDir()).setEsq(no.getEsq());
+                    if(no.getDir().getEsq() != null) {
+                        if (no.getDir().getEsq().getDir() != null){
+                            no.getDir().setEsq(noAux);
+                        } else {
+                            no.getDir().setEsq(null);
+                        }
+                    }
+                    System.out.println(raiz.getDir().getValor());
+                    System.out.println("caso raiz");
+                    raiz = novaRaiz;
+                }else if (folhaNo(retornaNo(raiz, valor))) {
                     if (retornaPai(raiz, valor).getDir() != null && retornaPai(raiz, valor).getDir().getValor() == valor) {
                         System.out.println("o nó folha que estava a direita de valor : " + no.getValor() + " foi removido e seu pai cujo valor : " + retornaPai(raiz, valor).getValor() + " teve seu apontamento a direita removido");
                         retornaPai(raiz, valor).setDir(null);
